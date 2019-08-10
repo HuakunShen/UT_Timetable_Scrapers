@@ -1,18 +1,18 @@
-use UTtimetable;
-CREATE TABLE `courseInfo` (
-  `full_course_code` varchar(1000) NOT NULL,
+use ut_timetable;
+CREATE TABLE `course_info` (
+  `full_course_code` varchar(20) NOT NULL,
   `courseId` int(11) DEFAULT NULL,
-  `code` varchar(1000) DEFAULT NULL,
-  `org` varchar(1000) DEFAULT NULL,
-  `orgName` varchar(1000) DEFAULT NULL,
-  `courseTitle` varchar(1000) DEFAULT NULL,
-  `courseDescription` varchar(1000) DEFAULT NULL,
-  `prerequisite` varchar(1000) DEFAULT NULL,
-  `corequisite` varchar(1000) DEFAULT NULL,
-  `exclusion` varchar(1000) DEFAULT NULL,
-  `recommendedPreparation` varchar(1000) DEFAULT NULL,
-  `section` varchar(1000) DEFAULT NULL,
-  `session` varchar(1000) DEFAULT NULL,
-  `breadthCategories` varchar(1000) DEFAULT NULL,
+  `code` text,
+  `org` text,
+  `orgName` text,
+  `courseTitle` text,
+  `courseDescription` text,
+  `prerequisite` text,
+  `corequisite` text,
+  `exclusion` text,
+  `recommendedPreparation` text,
+  `section` text,
+  `session` text,
+  `breadthCategories` text,
   PRIMARY KEY (`full_course_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
