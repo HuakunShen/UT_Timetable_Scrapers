@@ -1,3 +1,4 @@
+use UTtimetable;
 CREATE TABLE `courseInfo` (
   `full_course_code` varchar(1000) NOT NULL,
   `courseId` int(11) DEFAULT NULL,

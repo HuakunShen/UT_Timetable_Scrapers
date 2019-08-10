@@ -1,7 +1,6 @@
 import mysql.connector as SQL
 import requests
 import json
-
 params = {
     'code': 'CSC'
 }
