@@ -1,6 +1,5 @@
 import mysql.connector as SQL
 import requests
-import json
 import string
 
 COURSE_TABLE_NAME = 'course_info'
@@ -38,21 +37,26 @@ def parse_instructor(instructors):
 
 
 def parse_schedule(schedules, meetingId):
-
-    for schedule_key in schedules.keys():
-        schedule = schedules[schedule_key]
-        schedule_dict = {'meetingId': meetingId}
-        for schedule_attr in SCHEDULE_KEYS:
-            schedule_dict[schedule_attr] = schedule[schedule_attr]
-        save_to_DB(schedule_dict, SCHEDULE_TABLE_NAME)
+    # print('meeting: ', meetingId)
+    if schedules:
+        for schedule_key in schedules.keys():
+            schedule = schedules[schedule_key]
+            schedule_dict = {'meetingId': meetingId}
+            for schedule_attr in SCHEDULE_KEYS:
+                schedule_dict[schedule_attr] = schedule[schedule_attr]
+            save_to_DB(schedule_dict, SCHEDULE_TABLE_NAME)
 
 
 def parse_meeting(meeting):
+    # print("search meeting", meeting['meetingId'])
     parse_instructor(meeting['instructors'])
     parse_schedule(meeting['schedule'], meeting['meetingId'])
     meeting_dict = {}
     for meeting_key in MEETING_KEYS:
-        meeting_dict[meeting_key] = meeting[meeting_key]
+        try:
+            meeting_dict[meeting_key] = meeting[meeting_key]
+        except Exception as e:
+            pass
     save_to_DB(meeting_dict, MEETINGS_TABLE_NAME)
 
 
@@ -68,7 +72,6 @@ def save_to_DB(value_dict, table_name):
 
 if __name__ == '__main__':
     alphabets = list(string.ascii_lowercase)
-    alphabets = ['CSC108']
     file_all_courses = open('all_courses.txt', 'w+')
     course_keys = ['courseId', 'code', 'org', 'orgName', 'courseTitle', 'courseDescription', 'prerequisite',
                    'corequisite',
@@ -91,19 +94,20 @@ if __name__ == '__main__':
             'https://timetable.iit.artsci.utoronto.ca/api/20199/courses', params=params)
         r_dict = r.json()
         print("Search Code: ", code)
-        # print(r_dict)
         if type(r_dict) != dict:
             print(code + " doesn't exists")
             continue
-        else:
-            file_all_courses.write(code + "\n")
+        # else:
+        #     file_all_courses.write(code + "\n")
         r_dict_keys = list(r_dict.keys())
         # parse course info
 
         # each key is a full course name of a course
         for key in r_dict_keys:
+            # print("search course: ", key)
             course_data_dict = {}
             full_course_code = key
+            file_all_courses.write(key + "\n")
             course = r_dict[key]
             for course_key in course_keys:
                 course_data_dict[course_key] = course[course_key]
