@@ -4,43 +4,71 @@ import json
 import string
 
 COURSE_TABLE_NAME = 'course_info'
+INSTRUCTOR_TABLE_NAME = 'instructors'
+MEETINGS_TABLE_NAME = 'meetings'
+SCHEDULE_TABLE_NAME = 'schedules'
+INSTRUCTOR_KEYS = ['instructorId', 'firstName', 'lastName']
+MEETING_KEYS = ['meetingId', 'teachingMethod', 'sectionNumber', 'subtitle', 'cancel', 'waitlist', 'online',
+                'enrollmentCapacity', 'actualEnrolment', 'actualWaitlist', 'enrollmentIndicator']
+SCHEDULE_KEYS = ['meetingDay', 'meetingStartTime', 'meetingEndTime', 'meetingScheduleId', 'assignedRoom1',
+                 'assignedRoom2']
 
 
 # search all courses
 def parse_meetings(meetings):
     # meetings_keys = list(meetings.keys())
     for meeting_key in list(meetings.keys()):
-        parse_meeting(meetings[key])
+        parse_meeting(meetings[meeting_key])
 
 
 def parse_instructor(instructors):
-    for instructor_key in instructors.keys():
-        instructor = instructors[instructor_key]
-        keys = ['instructorId', 'firstName', 'lastName']
-        instructor_dict = {}
+    '''
+    parse instructors and save into DB
+    :param instructors:
+    :return:
+    '''
+    if instructors:
+        # print(instructors)
+        for instructor_key in instructors.keys():
+            instructor = instructors[instructor_key]
+            instructor_dict = {}
+            for instructor_attr in INSTRUCTOR_KEYS:
+                instructor_dict[instructor_attr] = instructor[instructor_attr]
+            save_to_DB(instructor_dict, INSTRUCTOR_TABLE_NAME)
 
-        instructorId = instructor['instructorId']
-        firstName = instructor['firstName']
-        lastName = instructor['lastName']
+
+def parse_schedule(schedules, meetingId):
+
+    for schedule_key in schedules.keys():
+        schedule = schedules[schedule_key]
+        schedule_dict = {'meetingId': meetingId}
+        for schedule_attr in SCHEDULE_KEYS:
+            schedule_dict[schedule_attr] = schedule[schedule_attr]
+        save_to_DB(schedule_dict, SCHEDULE_TABLE_NAME)
 
 
 def parse_meeting(meeting):
     parse_instructor(meeting['instructors'])
+    parse_schedule(meeting['schedule'], meeting['meetingId'])
+    meeting_dict = {}
+    for meeting_key in MEETING_KEYS:
+        meeting_dict[meeting_key] = meeting[meeting_key]
+    save_to_DB(meeting_dict, MEETINGS_TABLE_NAME)
 
 
-def save_to_DB(value_dict, coursor, table_name):
-    sql_values_s_holder = '(' + ','.join(['%s'] * len(course_data_dict)) + ')'
-    db_table_titles = str(tuple(course_data_dict.keys())).replace("'", "")
-    row_data = list(course_data_dict.values())
-    query = ("INSERT IGNORE INTO " + COURSE_TABLE_NAME
+def save_to_DB(value_dict, table_name):
+    sql_values_s_holder = '(' + ','.join(['%s'] * len(value_dict)) + ')'
+    db_table_titles = str(tuple(value_dict.keys())).replace("'", "")
+    row_data = list(value_dict.values())
+    query = ("INSERT IGNORE INTO " + table_name
              + db_table_titles +
              "VALUES " + sql_values_s_holder)
     cursor.execute(query, row_data)
 
 
-
 if __name__ == '__main__':
     alphabets = list(string.ascii_lowercase)
+    alphabets = ['CSC108']
     file_all_courses = open('all_courses.txt', 'w+')
     course_keys = ['courseId', 'code', 'org', 'orgName', 'courseTitle', 'courseDescription', 'prerequisite',
                    'corequisite',
@@ -81,9 +109,8 @@ if __name__ == '__main__':
                 course_data_dict[course_key] = course[course_key]
             course_data_dict["courseId"] = int(course_data_dict["courseId"])
             course_data_dict['full_course_code'] = full_course_code
-            save_to_DB(course_data_dict, cursor, COURSE_TABLE_NAME)
+            save_to_DB(course_data_dict, COURSE_TABLE_NAME)
             parse_meetings(course['meetings'])
-
             mydb.commit()
 
     cursor.close()
