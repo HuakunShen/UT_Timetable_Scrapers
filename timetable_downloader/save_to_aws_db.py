@@ -1,4 +1,4 @@
-import mysql.connector as SQL
+# import mysql.connector as SQL
 import pymysql
 import requests
 import string
