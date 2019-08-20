@@ -107,7 +107,6 @@ if __name__ == '__main__':
 
         # each key is a full course name of a course
         for key in r_dict_keys:
-            # print("search course: ", key)
             course_data_dict = {}
             full_course_code = key
             file_all_courses.write(key + "\n")
