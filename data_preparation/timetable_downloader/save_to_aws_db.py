@@ -108,7 +108,7 @@ if __name__ == '__main__':
         # each key is a full course name of a course
         for key in r_dict_keys:
             course_data_dict = {}
-            full_course_code = key
+
             file_all_courses.write(key + "\n")
             course = r_dict[key]
             for course_key in course_keys:
