@@ -1,0 +1,12 @@
+{
+  "localhost": {
+    "user": "root",
+    "password": "",
+    "host": "localhost"
+  },
+  "aws": {
+    "user": "admin",
+    "password": "administrator",
+    "host": "ut-timetable.c67xxyagcwrv.us-east-1.rds.amazonaws.com"
+  }
+}

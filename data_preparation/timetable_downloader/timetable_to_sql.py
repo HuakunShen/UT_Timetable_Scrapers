@@ -80,7 +80,7 @@ if __name__ == '__main__':
                    'corequisite',
                    'exclusion', 'recommendedPreparation', 'section', 'session', 'breadthCategories']
     mydb = SQL.connect(host='localhost', user='root',
-                       password='Hacker971', database='public')
+                       password='', database='ut_timetable')
     cursor = mydb.cursor()
     # clear the table before inserting, comment it out as needed
     query = ("truncate course_info;")
