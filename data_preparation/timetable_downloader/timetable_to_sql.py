@@ -1,7 +1,7 @@
 import mysql.connector as SQL
 import requests
 import string
-from multiprocessing import Pool
+import time
 
 
 COURSE_TABLE_NAME = 'course_info'
@@ -72,13 +72,9 @@ def save_to_DB(value_dict, table_name):
     cursor.execute(query, row_data)
 
 
-def run(search_term):
-
-
 if __name__ == '__main__':
-    alphabets = list(string.ascii_lowercase)
-
-
+    start_time = time.time()
+    alphabets = list(string.ascii_lowercase)        # a --- z
     file_all_courses = open('all_courses.txt', 'w+')
     course_keys = ['courseId', 'code', 'org', 'orgName', 'courseTitle', 'courseDescription', 'prerequisite',
                    'corequisite',
@@ -128,3 +124,9 @@ if __name__ == '__main__':
     mydb.close()
 
     file_all_courses.close()
+    print("time used without multiprocess: ", time.time() - start_time)     # print out the total process time
+    # Eventually, there were 3389 lines of data in table course_info
+    # time used was 394.8s = 6.58‬ minutes
+
+    # Multiprocessing is much faster in this case
+
