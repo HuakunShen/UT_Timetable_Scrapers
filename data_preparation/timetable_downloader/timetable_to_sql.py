@@ -1,6 +1,8 @@
 import mysql.connector as SQL
 import requests
 import string
+from multiprocessing import Pool
+
 
 COURSE_TABLE_NAME = 'course_info'
 INSTRUCTOR_TABLE_NAME = 'instructors'
@@ -70,14 +72,19 @@ def save_to_DB(value_dict, table_name):
     cursor.execute(query, row_data)
 
 
+def run(search_term):
+
+
 if __name__ == '__main__':
     alphabets = list(string.ascii_lowercase)
+
+
     file_all_courses = open('all_courses.txt', 'w+')
     course_keys = ['courseId', 'code', 'org', 'orgName', 'courseTitle', 'courseDescription', 'prerequisite',
                    'corequisite',
                    'exclusion', 'recommendedPreparation', 'section', 'session', 'breadthCategories']
-    mydb = SQL.connect(host='localhost', user='huakun',
-                       password='', database='public')
+    mydb = SQL.connect(host='localhost', user='root',
+                       password='Hacker971', database='public')
     cursor = mydb.cursor()
     # clear the table before inserting, comment it out as needed
     query = ("truncate course_info;")

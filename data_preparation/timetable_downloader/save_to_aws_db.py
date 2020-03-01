@@ -79,8 +79,8 @@ if __name__ == '__main__':
                    'exclusion', 'recommendedPreparation', 'section', 'session', 'breadthCategories']
     # mydb = SQL.connect(host='mysqldb.cqcfrqhijmrx.us-east-2.rds.amazonaws.com', user='admin',
     #                    password='admin', port='3306', database='public')
-    mydb = pymysql.connect('mysqldb.cqcfrqhijmrx.us-east-2.rds.amazonaws.com', user='admin', db='public',
-                           passwd='admin', connect_timeout=5)
+    mydb = pymysql.connect('ut-timetable.c67xxyagcwrv.us-east-1.rds.amazonaws.com', user='admin', db='ut_timetable',
+                           passwd='administrator', connect_timeout=5)
     cursor = mydb.cursor()
     # clear the table before inserting, comment it out as needed
     query = ("truncate course_info;")
