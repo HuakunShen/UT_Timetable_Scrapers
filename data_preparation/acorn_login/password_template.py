@@ -1,0 +1,2 @@
+ACORN_USERNAME = ___
+ACORN_PASSWORD = ___
