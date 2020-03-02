@@ -8,6 +8,42 @@ import time
 import os
 
 
+DB_INFO = {
+        "course": {
+            "table_name": 'course_info',
+            "keys": ['courseId', 'code', 'org', 'orgName', 'courseTitle', 'courseDescription', 'prerequisite',
+                     'corequisite',
+                     'exclusion', 'recommendedPreparation', 'section', 'session', 'breadthCategories', 'full_course_code']
+        },
+        "meeting": {
+            "table_name": 'meetings',
+            "keys": ['meetingId', 'teachingMethod', 'sectionNumber', 'subtitle', 'cancel', 'waitlist', 'online',
+                     'enrollmentCapacity', 'actualEnrolment', 'actualWaitlist', 'enrollmentIndicator']
+        },
+        "schedule": {
+            "table_name": 'schedules',
+            "keys": ['meetingId', 'meetingDay', 'meetingStartTime', 'meetingEndTime', 'meetingScheduleId', 'assignedRoom1',
+                     'assignedRoom2']
+        },
+        "instructor": {
+            "table_name": 'instructors',
+            "keys": ['instructorId', 'firstName', 'lastName']
+        }
+    }
+
+course_rows = []
+instructor_rows = []
+meeting_rows = []
+schedule_rows = []
+
+host = "localhost"
+host = "aws"
+
+# load password
+with open('pwd.json') as json_file:
+    pwd = json.load(json_file)
+
+
 def parse_meetings(meetings):
     for meeting_key in list(meetings.keys()):
         parse_meeting(meetings[meeting_key])
@@ -123,41 +159,7 @@ def run(code):
 
 
 if __name__ == "__main__":
-    DB_INFO = {
-        "course": {
-            "table_name": 'course_info',
-            "keys": ['courseId', 'code', 'org', 'orgName', 'courseTitle', 'courseDescription', 'prerequisite',
-                     'corequisite',
-                     'exclusion', 'recommendedPreparation', 'section', 'session', 'breadthCategories', 'full_course_code']
-        },
-        "meeting": {
-            "table_name": 'meetings',
-            "keys": ['meetingId', 'teachingMethod', 'sectionNumber', 'subtitle', 'cancel', 'waitlist', 'online',
-                     'enrollmentCapacity', 'actualEnrolment', 'actualWaitlist', 'enrollmentIndicator']
-        },
-        "schedule": {
-            "table_name": 'schedules',
-            "keys": ['meetingId', 'meetingDay', 'meetingStartTime', 'meetingEndTime', 'meetingScheduleId', 'assignedRoom1',
-                     'assignedRoom2']
-        },
-        "instructor": {
-            "table_name": 'instructors',
-            "keys": ['instructorId', 'firstName', 'lastName']
-        }
-    }
-
-    course_rows = []
-    instructor_rows = []
-    meeting_rows = []
-    schedule_rows = []
-
-    # load password
-    with open(os.getcwd() + '/pwd.json') as json_file:
-        pwd = json.load(json_file)
-
     # connect to db
-    host = "localhost"
-    host = "aws"
     connection = mysql.connect(
         host=pwd[host]['host'], user=pwd[host]['user'], password=pwd[host]['password'], database='ut_timetable')
     cursor = connection.cursor()
