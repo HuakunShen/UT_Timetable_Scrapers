@@ -7,3 +7,5 @@ acorn_login/__pycache__/
 
 \.vscode/
 
+
+data_preparation/acorn_login/password.py
