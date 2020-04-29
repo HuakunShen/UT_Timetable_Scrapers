@@ -11,29 +11,29 @@ import '../stylesheets/timetable.scss';
 
 const columns = [
   { id: 'Time', label: 'Time', minWidth: 50, align: 'center' },
-  { id: 'Monday', label: 'Monday', minWidth: 100, align: 'center' },
+  { id: 'Monday', label: 'Monday', minWidth: 70, align: 'center' },
   {
     id: 'Tuesday',
     label: 'Tuesday',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
   },
   {
     id: 'Wednesday',
     label: 'Wednesday',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
   },
   {
     id: 'Thursday',
     label: 'Thursday',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
   },
   {
     id: 'Friday',
     label: 'Friday',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
   },
 ];
@@ -84,7 +84,7 @@ const Timetable = (props) => {
                   <TableCell
                     key={index}
                     align={column.align}
-                    // style={{ minWidth: column.minWidth }}
+                    style={{ minWidth: column.minWidth }}
                   >
                     {column.label}
                   </TableCell>
@@ -96,8 +96,6 @@ const Timetable = (props) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
-                      console.log(column);
-
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
