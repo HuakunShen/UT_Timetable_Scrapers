@@ -74,7 +74,7 @@ const Timetable = (props) => {
   useEffect(() => {}, [schedules]);
 
   return (
-    <div className="timetable-page pt-5">
+    <div className="timetable-page">
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
