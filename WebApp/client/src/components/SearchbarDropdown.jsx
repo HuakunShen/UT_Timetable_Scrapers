@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Collapse from '@material-ui/core/Collapse';
-import Grow from '@material-ui/core/Grow';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
 import '../stylesheets/searchbardropdown.scss';
+import Axios from 'axios';
+import $ from 'jquery';
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -77,37 +70,92 @@ const SearchbarDropdown = () => {
   const classes = useStyles();
   const [searchInput, setSearchInput] = useState('');
   const [open, setOpen] = useState(true);
+  const [searchRes, setSearchRes] = useState(null);
+  const [timer, setTimer] = useState(null);
+  const inputRef = useRef();
 
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const searchCourseCode = async () => {
+    // console.log(search);
+
+    try {
+      const res = await Axios.get('/api/courses', {
+        params: {
+          code: searchInput,
+        },
+      });
+      setSearchRes(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // on mount
   useEffect(() => {
-    console.log('Search Content Changing: ', searchInput);
+    $(document).keyup(function (e) {
+      console.log(e.key);
+      if (e.key === 'Escape' && open) {
+        setOpen(false);
+      }
+    });
+    $(
+      $(document).click(function (e) {
+        console.log(e.target.id);
+
+        if (
+          !$(e.target).closest('.result-list').length &&
+          e.target.id !== 'search-box'
+        ) {
+          setOpen(false);
+        }
+      })
+    );
+  }, []);
+
+  // while inputing
+  useEffect(() => {
+    // console.log('Search Content Changing: ', searchInput);
+    if (timer) clearTimeout(timer);
+    setTimer(
+      setTimeout(() => {
+        searchCourseCode(searchInput);
+      }, 700)
+    );
   }, [searchInput]);
+
+  // search results changed
+  useEffect(() => {
+    if (searchRes) console.log(Object.keys(searchRes));
+  }, [searchRes]);
+
+  // input on change
+  const inputOnChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
   return (
     <div className="search-bar-dropdown">
       <List component="div" disablePadding>
-        {/* <ListItem button className={classes.searchbar} style={{ padding: 0 }}> */}
-        {/* <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            fullWidth
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            onClick={handleClick}
-            onChange={(e) => setSearchInput(e.target.value)}
-            value={searchInput}
-            inputProps={{ 'aria-label': 'search' }}
-          />
-        </div> */}
-        {/* </ListItem> */}
         <div className="search-box-container">
-          <input type="text" onClick={handleClick} />
+          <input
+            id="search-box"
+            type="text"
+            ref={inputRef}
+            onSelect={(e) => {
+              console.log('selected');
+
+              setOpen(true);
+            }}
+            // onClick={(e) => {
+            //   console.log('clicked');
+
+            //   searchCourseCode();
+            // }}
+            onChange={inputOnChange}
+          />
           <i className="fas fa-search" />
         </div>
         <Collapse
@@ -117,24 +165,20 @@ const SearchbarDropdown = () => {
           unmountOnExit
         >
           <div className="result-list">
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
-            <div className="nested-item">item</div>
-            <Divider />
+            {searchRes &&
+              Object.keys(searchRes).map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <div
+                      className="nested-item"
+                      onClick={(e) =>
+                        (inputRef.current.value = `${item}-${searchRes[item].courseTitle}`)
+                      }
+                    >{`${item}-${searchRes[item].courseTitle}`}</div>
+                    <Divider />
+                  </React.Fragment>
+                );
+              })}
           </div>
         </Collapse>
       </List>
