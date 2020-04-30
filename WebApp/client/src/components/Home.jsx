@@ -2,28 +2,31 @@ import React, { useState, useRef, useEffect } from 'react';
 import Timetable from './Timetable';
 import Paper from '@material-ui/core/Paper';
 import '../stylesheets/home.scss';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 import Navbar from './Navbar';
 import SearchbarDropdown from './SearchbarDropdown';
+import IconButton from '@material-ui/core/IconButton';
+import SelectedCourses from './SelectedCourses';
 // import Button from '@material-ui/core/Button';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
     borderRadius: 0,
   },
-
   offset: theme.mixins.toolbar,
 }));
 
 const Home = () => {
   const classes = useStyles();
-
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  const selectCourse = (course) => {
+    setSelectedCourses(selectedCourses.concat([course]));
+  };
+  const removeSelectedCourse = (courseId) => {
+    setSelectedCourses(
+      selectedCourses.filter((course) => course.courseId !== courseId)
+    );
+  };
   return (
     <Paper className={classes.root}>
       <Navbar position="fixed" />
@@ -32,7 +35,24 @@ const Home = () => {
         <div className="container-fluid pt-1">
           <div className="row">
             <div className="col-md-3 tools">
-              <SearchbarDropdown />
+              <SearchbarDropdown selectCourse={selectCourse} />
+              <br />
+              {selectedCourses.length > 0 && (
+                <React.Fragment>
+                  <SelectedCourses
+                    courses={selectedCourses}
+                    removeSelectedCourse={removeSelectedCourse}
+                  />
+                  <div className="text-center mt-2">
+                    <span className="generate-paln-btn">
+                      <IconButton>
+                        <i className="fas fa-rocket-launch"></i>
+                      </IconButton>
+                      Generate
+                    </span>
+                  </div>
+                </React.Fragment>
+              )}
             </div>
             <div className="col-md-9">
               <Timetable />

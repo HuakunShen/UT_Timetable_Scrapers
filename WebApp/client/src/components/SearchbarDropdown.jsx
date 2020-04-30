@@ -66,7 +66,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SearchbarDropdown = () => {
+const SearchbarDropdown = (props) => {
+  const { selectCourse } = props;
   const classes = useStyles();
   const [searchInput, setSearchInput] = useState('');
   const [open, setOpen] = useState(true);
@@ -74,13 +75,7 @@ const SearchbarDropdown = () => {
   const [timer, setTimer] = useState(null);
   const inputRef = useRef();
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   const searchCourseCode = async () => {
-    // console.log(search);
-
     try {
       const res = await Axios.get('/api/courses', {
         params: {
@@ -101,18 +96,15 @@ const SearchbarDropdown = () => {
         setOpen(false);
       }
     });
-    $(
-      $(document).click(function (e) {
-        console.log(e.target.id);
-
-        if (
-          !$(e.target).closest('.result-list').length &&
-          e.target.id !== 'search-box'
-        ) {
-          setOpen(false);
-        }
-      })
-    );
+    $(document).click(function (e) {
+      if (
+        !$(e.target).closest('.result-list').length &&
+        e.target.id !== 'search-box'
+      ) {
+        setOpen(false);
+      }
+    });
+    // eslint-disable-next-line
   }, []);
 
   // while inputing
@@ -122,8 +114,9 @@ const SearchbarDropdown = () => {
     setTimer(
       setTimeout(() => {
         searchCourseCode(searchInput);
-      }, 700)
+      }, 500)
     );
+    // eslint-disable-next-line
   }, [searchInput]);
 
   // search results changed
@@ -149,14 +142,12 @@ const SearchbarDropdown = () => {
 
               setOpen(true);
             }}
-            // onClick={(e) => {
-            //   console.log('clicked');
-
-            //   searchCourseCode();
-            // }}
             onChange={inputOnChange}
           />
-          <i className="fas fa-search" />
+          <i
+            className="fas fa-search"
+            onClick={(e) => $('#search-box').focus()}
+          />
         </div>
         <Collapse
           in={open}
@@ -171,9 +162,13 @@ const SearchbarDropdown = () => {
                   <React.Fragment key={index}>
                     <div
                       className="nested-item"
-                      onClick={(e) =>
-                        (inputRef.current.value = `${item}-${searchRes[item].courseTitle}`)
-                      }
+                      onClick={(e) => {
+                        setOpen(false);
+                        inputRef.current.value = `${item}-${searchRes[item].courseTitle}`;
+                        selectCourse(
+                          Object.assign(searchRes[item], { fullCode: item })
+                        );
+                      }}
                     >{`${item}-${searchRes[item].courseTitle}`}</div>
                     <Divider />
                   </React.Fragment>

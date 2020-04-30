@@ -4,20 +4,25 @@
     position: relative;
     input {
       width: 100%;
+      //   width: 0%;
       background: none;
       border: 1px solid grey;
       padding-top: 5px;
       padding-bottom: 5px;
       padding-left: 40px;
       color: white;
+      border-radius: 5px;
+      transition: width 0.5s;
     }
-    input:focus {
-      border: 2px solid white;
-    }
+    // input:focus {
+    //   border: 2px solid white;
+    //   width: 100%;
+    // }
     .fa-search {
       position: absolute;
       top: 9px;
-      left: 10px;
+      left: 12px;
+      cursor: pointer;
     }
   }
   .result-list {

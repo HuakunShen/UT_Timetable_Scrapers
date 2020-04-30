@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
     params: req.query,
   })
     .then((data) => {
-      console.log(data.data);
+      // console.log(data.data);
       res.send(data.data);
     })
     .catch((err) => {
